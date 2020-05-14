@@ -86,9 +86,9 @@ cycloid
 
 EOF
 
-#######Creation environnement 
+##Creation environnement 
 export CYCLOID_ENV=poc
-#######
+##
 
 cat >> environments/${CYCLOID_ENV}-cycloid.yml <<EOF
 # Resolvable domain name from the instance and externally to use Cycloid console.
@@ -109,7 +109,7 @@ concourse_authorized_worker_keys:
   - "{{lookup('file', 'keys/id_rsa.pub')}}"
 EOF
 
-######
+##
 Edit : vi /Cycloid/cycloid-onprem/roles/geerlingguy.docker/tasks/main.yml
 - name: Install Docker.
   package:
@@ -117,10 +117,10 @@ Edit : vi /Cycloid/cycloid-onprem/roles/geerlingguy.docker/tasks/main.yml
           name: "docker"
           #state: "{{ docker_package_state }}"
   notify: restart docker
-#######
+##
 Edit : vi /Cycloid/cycloid-onprem/roles/geerlingguy.docker/defaults/main.yml
 docker_compose_version: "1.25.5"
-#######
+##
 
 
 vi ./roles/ansible-cycloid-onprem/tasks/pre-setup.xml
@@ -131,7 +131,7 @@ vi ./roles/ansible-cycloid-onprem/tasks/pre-setup.xml
       - mariadb-client
       - python3-setuptools
     state: present
-#######
+##
 
 source .env/bin/activate
 export AWS_ACCESS_KEY_ID=XXXXX 
