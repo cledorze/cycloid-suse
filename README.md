@@ -5,8 +5,11 @@
 
 SLE Modules
 -----------
-```SUSEConnect -p sle-module-desktop-applications/15.1/x86_64
+```
+SUSEConnect -p sle-module-desktop-applications/15.1/x86_64
+
 SUSEConnect --product sle-module-development-tools/15.1/x86_64
+
 SUSEConnect --product PackageHub/15.1/x86_64
 ```
 ### Installation
@@ -23,11 +26,10 @@ zypper in python3-setuptools gcc git-core libffi-devel libopenssl-devel patterns
 sudo easy_install pip
 sudo pip install virtualenv
 ```
-
-#Add ssh_id_rsa for git via ssh on cycloid
+### Ask Cycloid for ssh_id_rsa tobe able to git clone cycloid repo 
 ```
 eval `ssh-agent -s`
-ssh-add /home/cycloid/.ssh/suse_id_rsa
+ssh-add suse_id_rsa
 git clone git@github.com:cycloidio/ansible-cycloid-onprem.git
 mkdir cycloid-onprem
 cd cycloid-onprem
@@ -37,9 +39,9 @@ source .env/bin/activate
 mkdir keys
 ssh-keygen -t rsa -b 2048 -N '' -f keys/id_rsa
 ```
-
 >pip install molecule ansible==2.8.* docker-py passlib bcrypt
 pip install ansible==2.8.* passlib bcrypt
+
 
 
 ### Install Ansible requirements
@@ -113,8 +115,8 @@ EOF
           #state: "{{ docker_package_state }}"
   notify: restart docker
 
-> Edit : vi /Cycloid/cycloid-onprem/roles/geerlingguy.docker/defaults/main.yml
-docker_compose_version: "1.25.5"
+> ??? Edit : vi /Cycloid/cycloid-onprem/roles/geerlingguy.docker/defaults/main.yml
+??? docker_compose_version: "1.25.5"
 
 > Edit : vi ./roles/ansible-cycloid-onprem/tasks/pre-setup.xml
 ---
@@ -125,33 +127,21 @@ docker_compose_version: "1.25.5"
       - python3-setuptools
     state: present
 
-> Edit cycloid:/Cycloid/ansible-cycloid-onprem # vi ./roles/geerlingguy.docker/tasks/main.yml
-- name: Install Docker.
-  package:
-          #name: "{{ docker_package }}"
-          name: "docker"
-          #state: "{{ docker_package_state }}"
-  notify: restart docker
-  
-
-
+> cp ./roles/mhutter.docker-systemd-service/vars/RedHat.yml /Cycloid/cycloid-onprem/roles/mhutter.docker-systemd-service/vars/Suse.yml
+ 
+## Warning !!!!SSH KEY FORMAT !!!!!! 
+ 
 ### Deployment 
 ```
-source .env/bin/activate
+//source .env/bin/activate
 export AWS_ACCESS_KEY_ID=XXXXX 
 export AWS_SECRET_ACCESS_KEY=XXXXXX
 aws ecr get-login --no-include-email --region eu-west-1
 #eval $(aws ecr get-login --no-include-email --region eu-west-1 | sed 's|https://||')
 #ssh-copy-id -i ./keys/id_rsa.pub admin@10.10.10.13
-
-#eval `ssh-agent -s`
-ssh-add /root/suse_id_rsa
-ssh-add ./keys/id_rsa
-export CYCLOID_ENV=poc
-cp ./roles/mhutter.docker-systemd-service/vars/RedHat.yml /Cycloid/cycloid-onprem/roles/mhutter.docker-systemd-service/vars/Suse.yml
 ```
 
-## Warning !!!!SSH KEY FORMAT !!!!!!
+
 
 ansible-playbook -e env=${CYCLOID_ENV} -u admin -b -i inventory playbook.yml -c local
 
@@ -180,9 +170,6 @@ docker_install_compose: false
 docker_compose_version: "1.25.5"
 docker_compose_path: /usr/local/bin/docker-compose
 
-
-
-
 ## BUG => Consider to install docker-compose manually 
 docker_edition: ''
 #docker_edition: 'ce'
@@ -195,3 +182,6 @@ ansible-playbook -u admin -b -i inventory adhoc/uninstall.yml
 > After reboot
 ansible-playbook -e env=${CYCLOID_ENV} -u admin -b -i inventory vault_unseal.yml
 for image in `docker images | awk -F" " '{print $3}'|grep -e ^[0-9]`; do docker rmi -f $image; done
+systemctl stop cycloid-*
+systemctl stop concourse-*
+systemctl stop vault_container.service
