@@ -12,6 +12,8 @@ SUSEConnect --product sle-module-development-tools/15.1/x86_64
 
 SUSEConnect --product PackageHub/15.1/x86_64
 
+SUSEConnect -p sle-module-containers/15.1/x86_64
+
 SUSEConnect -p sle-module-public-cloud/15.1/x86_64
 ```
 ### Installation
@@ -20,7 +22,7 @@ SUSEConnect -p sle-module-public-cloud/15.1/x86_64
 >Note: Before running ansible playbook, ensure virtualenv, pip and dependencies are satisfied on your system.
 
 ```
-zypper in python3-setuptools gcc git-core libffi-devel libopenssl-devel patterns-devel-python-devel_python3 
+zypper in python3-setuptools docker gcc git-core libffi-devel libopenssl-devel patterns-devel-python-devel_python3 
 ```
 
 ### Install virtualenv
