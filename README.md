@@ -11,6 +11,8 @@ SUSEConnect -p sle-module-desktop-applications/15.1/x86_64
 SUSEConnect --product sle-module-development-tools/15.1/x86_64
 
 SUSEConnect --product PackageHub/15.1/x86_64
+
+SUSEConnect -p sle-module-public-cloud/15.1/x86_64
 ```
 ### Installation
 
@@ -39,7 +41,8 @@ source .env/bin/activate
 mkdir keys
 ssh-keygen -t rsa -b 2048 -N '' -f keys/id_rsa
 ```
->pip install molecule ansible==2.8.* docker-py passlib bcrypt
+> pip install molecule ansible==2.8.* docker-py passlib bcrypt
+
 pip install ansible==2.8.* passlib bcrypt
 
 
